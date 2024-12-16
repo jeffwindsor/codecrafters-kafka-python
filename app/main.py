@@ -1,19 +1,15 @@
 import socket  # noqa: F401
+from protocol import Response, decode_request, encode_response
 
 
-def big_endian(value):
-    return value.to_bytes(4, byteorder="big")
-
-
-def message(id):
-    id_be = big_endian(id)
-    len_be = big_endian(len(id_be))
-    return len_be + id_be
+def handle_request(req_str: str) -> str:
+    request = decode_request(req_str)
+    response = Response(0, request.correlation_id)
+    return encode_response(response)
 
 
 def handle_client(client):
-    client.recv(1024)
-    client.sendall(message(7))
+    client.sendall(handle_request(client.recv(1024)))
     client.close()
 
 
