@@ -5,10 +5,6 @@ def bytes_big_endian_to_int(value: bytes) -> int:
     return int.from_bytes(value, byteorder="big", signed=True)
 
 
-def string_big_endian_to_int(value: str) -> int:
-    return bytes_big_endian_to_int(bytes.fromhex(value))
-
-
 def int_to_string_big_endian(value: int, number_of_bytes: int) -> str:
     if value < 0:
         raise ValueError("The value must be non-negative.")
@@ -34,17 +30,12 @@ class Request:
     # tag_buffer 	COMPACT_ARRAY 	Optional tagged fields
 
 
-def decode_request(hex: str) -> Request:
-    # two hex characters per byte
-    message_size = hex[:8]  # 4 bytes
-    request_api_key = hex[8:12]  # 2 bytes
-    request_api_version = hex[12:16]  # 2 bytes
-    correlation_id = hex[16:24]  # 4 bytes
+def decode_request(hex) -> Request:
     return Request(
-        string_big_endian_to_int(message_size),
-        string_big_endian_to_int(request_api_key),
-        string_big_endian_to_int(request_api_version),
-        string_big_endian_to_int(correlation_id),
+        bytes_big_endian_to_int(hex[:4]),
+        bytes_big_endian_to_int(hex[4:6]),
+        bytes_big_endian_to_int(hex[6:8]),
+        bytes_big_endian_to_int(hex[8:12]),
     )
 
 
