@@ -1,18 +1,11 @@
 import socket  # noqa: F401
-from .protocol import Response, decode_request, encode_response
-
-
-def handle_request(req_str: str) -> str:
-    request = decode_request(req_str)
-    response = encode_response(Response(0, request.correlation_id))
-    return response
+from .protocol import decode_request, encode_response
 
 
 def handle_client(client):
-    req_str = client.recv(1024)
-    print(req_str)
-    resp_str = handle_request(req_str)
-    client.sendall(resp_str)
+    request_bytes = client.recv(2048)
+    response_bytes = encode_response(decode_request(request_bytes))
+    client.sendall(response_bytes)
     client.close()
 
 
