@@ -1,5 +1,5 @@
 import socket  # noqa: F401
-from protocol import Response, decode_request, encode_response
+from .protocol import Response, decode_request, encode_response
 
 
 def handle_request(req_str: str) -> str:
