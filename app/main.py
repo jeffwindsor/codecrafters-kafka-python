@@ -3,10 +3,6 @@ from .protocol import decode_request, encode_response
 
 
 def handle_client(client):
-    request_bytes = client.recv(2048)
-    response_bytes = encode_response(decode_request(request_bytes))
-    client.sendall(response_bytes)
-    client.close()
 
 
 def main():
@@ -16,7 +12,9 @@ def main():
 
     while True:
         client, address = server.accept()
-        handle_client(client)
+        request_bytes = client.recv(2048)
+        response_bytes = encode_response(decode_request(request_bytes))
+        client.sendall(response_bytes)
 
 
 if __name__ == "__main__":
