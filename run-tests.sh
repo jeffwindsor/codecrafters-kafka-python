@@ -1,6 +1,4 @@
 #!/bin/bash
 
 clear
-
-pytest
-
+pytest -vv

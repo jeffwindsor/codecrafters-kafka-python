@@ -1,22 +1,9 @@
 from dataclasses import dataclass
 
 
-def bytes_big_endian_to_int(value: bytes) -> int:
-    return int.from_bytes(value, byteorder="big", signed=True)
-
-
-def int_to_string_big_endian(value: int, number_of_bytes: int) -> str:
-    if value < 0:
-        raise ValueError("The value must be non-negative.")
-
-    try:
-        bytes = value.to_bytes(number_of_bytes, byteorder="big")
-    except OverflowError:
-        raise ValueError(
-            f"The value {value} cannot be represented in {number_of_bytes} bytes."
-        )
-
-    return bytes.hex()
+def int_to_hex_string(num, bytes):
+    """Converts an integer to a hexadecimal string of n bytes."""
+    return num.to_bytes(bytes, byteorder="big").hex().upper()
 
 
 # == Communication Protocol ==
@@ -32,10 +19,10 @@ class Request:
 
 def decode_request(hex) -> Request:
     return Request(
-        bytes_big_endian_to_int(hex[:4]),
-        bytes_big_endian_to_int(hex[4:6]),
-        bytes_big_endian_to_int(hex[6:8]),
-        bytes_big_endian_to_int(hex[8:12]),
+        int(hex[:8], 16),
+        int(hex[8:12], 16),
+        int(hex[12:16], 16),
+        int(hex[16:24], 16),
     )
 
 
@@ -45,7 +32,7 @@ class Response:
     correlation_id: int
 
 
-def encode_response(r: Response) -> str:
-    message_size = int_to_string_big_endian(r.message_size, 4)
-    correlation_id = int_to_string_big_endian(r.correlation_id, 4)
+def encode_response(r: Response) -> bytes:
+    message_size = int_to_hex_string(r.message_size, 4)
+    correlation_id = int_to_hex_string(r.correlation_id, 4)
     return message_size + correlation_id
