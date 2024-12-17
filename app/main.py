@@ -4,12 +4,17 @@ from .protocol import Response, decode_request, encode_response
 
 def handle_request(req_str: str) -> str:
     request = decode_request(req_str)
-    response = Response(0, request.correlation_id)
-    return encode_response(response)
+    response = encode_response(Response(0, request.correlation_id))
+    print(response)
+    return response
 
 
 def handle_client(client):
-    client.sendall(handle_request(client.recv(1024)))
+    req_str = client.rev(1024)
+    print(req_str)
+    resp_str = handle_request(req_str)
+    print(resp_str)
+    client.sendall(resp_str)
     client.close()
 
 
