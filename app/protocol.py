@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 def int_to_output(num, bytes):
-    return num.to_bytes(bytes, byteorder="big").hex()
+    return num.to_bytes(bytes, byteorder="big")
 
 
 def input_to_int(input) -> int:
@@ -22,10 +22,10 @@ class Request:
 
 def decode_request(hex) -> Request:
     return Request(
-        input_to_int(hex[:8]),
+        input_to_int(hex[:4]),
+        input_to_int(hex[4:6]),
+        input_to_int(hex[6:8]),
         input_to_int(hex[8:12]),
-        input_to_int(hex[12:16]),
-        input_to_int(hex[16:24]),
     )
 
 
