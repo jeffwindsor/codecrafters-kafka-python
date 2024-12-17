@@ -1,9 +1,12 @@
 from dataclasses import dataclass
 
 
-def int_to_hex_string(num, bytes):
-    """Converts an integer to a hexadecimal string of n bytes."""
-    return num.to_bytes(bytes, byteorder="big").hex().upper()
+def int_to_output(num, bytes):
+    return num.to_bytes(bytes, byteorder="big").hex()
+
+
+def input_to_int(input) -> int:
+    return int.from_bytes(input, byteorder="big")
 
 
 # == Communication Protocol ==
@@ -19,10 +22,10 @@ class Request:
 
 def decode_request(hex) -> Request:
     return Request(
-        int(hex[:8], 16),
-        int(hex[8:12], 16),
-        int(hex[12:16], 16),
-        int(hex[16:24], 16),
+        input_to_int(hex[:8]),
+        input_to_int(hex[8:12]),
+        input_to_int(hex[12:16]),
+        input_to_int(hex[16:24]),
     )
 
 
@@ -33,6 +36,6 @@ class Response:
 
 
 def encode_response(r: Response) -> bytes:
-    message_size = int_to_hex_string(r.message_size, 4)
-    correlation_id = int_to_hex_string(r.correlation_id, 4)
+    message_size = int_to_output(r.message_size, 4)
+    correlation_id = int_to_output(r.correlation_id, 4)
     return message_size + correlation_id
