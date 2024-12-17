@@ -36,6 +36,9 @@ class Response:
 
 
 def encode_response(r: Response) -> bytes:
-    message_size = int_to_output(r.message_size, 4)
-    correlation_id = int_to_output(r.correlation_id, 4)
-    return message_size + correlation_id
+    error_code = 35
+    return (
+        int_to_output(r.message_size, 4)
+        + int_to_output(r.correlation_id, 4)
+        + int_to_output(error_code, 2)
+    )

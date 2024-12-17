@@ -13,7 +13,7 @@ def test_parse_correlation_id():
     request = decode_request(given)
     response = Response(0, request.correlation_id)
     actual = encode_response(response)
-    expected = b"\x00\x00\x00\x00\x6f\x7f\xc6\x61"
+    expected = b"\x00\x00\x00\x00\x6f\x7f\xc6\x61\x00\x23"
 
     assert actual == expected
 
